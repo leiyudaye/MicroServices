@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./user";
+
+enum Gender {
+    Idel = 0;
+    Boy = 1;
+    Girl = 2;
+}
+
+message UMap {
+	map<string, string> map = 1; // 定义Map对象
+}
+
+message UserInfo {
+    string name = 1;        // 用户名
+    Gender gender = 2;      // 性别
+    int32  age = 3;         // 年龄
+    string addr = 4;        // 地址
+    string phone = 5;       // 电话
+}
+
+message RegisterUserReq {
+    UserInfo user = 1;          // 用户信息
+}
+
+message RegisterUserRsp {
+    int32  code = 1;         // 返回码
+    string msg = 2;          // 错误信息
+    int64  userID = 3;       // 用户ID
+}
+
+message GetUserInfoReq {
+    int64 userID = 1;       // 用户ID
+}
+
+message GetUserInfoRsp {
+    UserInfo user = 1;
+}
+
+service UserInfoSvr {
+    rpc RegisterUser (RegisterUserReq) returns (RegisterUserRsp);
+    rpc GetUserInfo  (GetUserInfoReq)  returns (GetUserInfoRsp);
+}
