@@ -3,7 +3,7 @@
  * @Author: lly
  * @Date: 2021-05-28 21:20:14
  * @LastEditors: lly
- * @LastEditTime: 2021-05-28 23:13:32
+ * @LastEditTime: 2021-05-29 23:25:58
  */
 
 package main
@@ -23,15 +23,15 @@ const (
 	gUserSessionPrefix = "userinfo_session"
 )
 
-type UserInfoSvr struct {
+type UserInfoSvrImpl struct {
 }
 
 // 注册用户
-func (u UserInfoSvr) RegisterUser(ctx context.Context, req *user.RegisterUserReq) (*user.RegisterUserRsp, error) {
+func (u *UserInfoSvrImpl) RegisterUser(ctx context.Context, req *user.RegisterUserReq, rsp *user.RegisterUserRsp) error {
 	redisfd, err := redis.Dial("tcp", gRedisAddr)
 	if err != nil {
 		fmt.Println("redis dial failed, err=%v", err)
-		return nil, errors.New("redis dial failed")
+		return errors.New("redis dial failed")
 	}
 	defer redisfd.Close()
 
@@ -39,38 +39,30 @@ func (u UserInfoSvr) RegisterUser(ctx context.Context, req *user.RegisterUserReq
 	userID, err := redis.Int64(redisfd.Do("INCR", gUserSessionPrefix))
 	if err != nil {
 		fmt.Println("user session incrby failed. err=%v", err)
-		return nil, errors.New("redis incrby failed")
+		return errors.New("redis incrby failed")
 	}
 
 	// 存储用户信息
 	_, err = redisfd.Do("HMSet", fmt.Sprintf("%s%v", gUserInfoPrefix, userID),
 		"Name", req.User.Name,
-		"Gender", req.User.Gender.Number(),
+		"Gender", req.User.Gender,
 		"Age", req.User.Age,
 		"Addr", req.User.Addr,
 		"Phone", req.User.Phone)
 	if err != nil {
 		fmt.Println("HMSet failed, err=%v", err)
-		return nil, errors.New("HMSet failed")
+		return errors.New("HMSet failed")
 	}
 
-	// 返回信息
-	rsp := &user.RegisterUserRsp{
-		Code:   0,
-		Msg:    "success",
-		UserID: userID,
-	}
-	return rsp, nil
+	return nil
 }
 
 // 查询用户信息
-func (u UserInfoSvr) GetUserInfo(ctx context.Context, req *user.GetUserInfoReq) (*user.GetUserInfoRsp, error) {
-
+func (u *UserInfoSvrImpl) GetUserInfo(ctx context.Context, req *user.GetUserInfoReq, rsp *user.GetUserInfoRsp) error {
 	fmt.Println(req)
-	rsp := new(user.GetUserInfoRsp)
 	info := &user.UserInfo{Name: "lly"}
 	rsp.User = info
-	return rsp, nil
+	return nil
 
 	/*
 		redisfd, err := redis.Dial("tcp", gRedisAddr)
