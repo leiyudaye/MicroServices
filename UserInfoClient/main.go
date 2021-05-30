@@ -3,7 +3,7 @@
  * @Author: lly
  * @Date: 2021-05-28 22:44:51
  * @LastEditors: lly
- * @LastEditTime: 2021-05-30 12:00:48
+ * @LastEditTime: 2021-05-31 01:16:31
  */
 
 package main
@@ -13,8 +13,7 @@ import (
 	"fmt"
 	"log"
 	"pb/user"
-
-	"github.com/micro/go-micro/v2"
+	// "github.com/micro/go-micro/v2"
 )
 
 const (
