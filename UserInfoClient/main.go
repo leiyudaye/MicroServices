@@ -3,7 +3,7 @@
  * @Author: lly
  * @Date: 2021-05-28 22:44:51
  * @LastEditors: lly
- * @LastEditTime: 2021-05-31 01:16:31
+ * @LastEditTime: 2021-05-31 01:36:23
  */
 
 package main
@@ -11,9 +11,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"pb/user"
-	// "github.com/micro/go-micro/v2"
+
+	"github.com/micro/micro/v3/service"
 )
 
 const (
@@ -23,7 +23,7 @@ const (
 func main() {
 
 	// create a new service
-	service := micro.NewService()
+	service := service.New()
 
 	// parse command line flags
 	service.Init()
@@ -31,7 +31,7 @@ func main() {
 	client := user.NewUserInfoSvrService("user.UserInfo", service.Client())
 	rsp, err := client.GetUserInfo(context.Background(), &user.GetUserInfoReq{UserID: 1})
 	if err != nil {
-		log.Fatal("")
+		fmt.Println(err)
 	}
 	fmt.Println(rsp)
 
